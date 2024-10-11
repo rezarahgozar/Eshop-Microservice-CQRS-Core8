@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{A4938CEC-DF6C-46ED-811B-294BC2F9192C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E50AE872-56A9-4D1A-8E3B-3DE93341A9D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{A6181309-D701-4FF4-9FCD-F6422553E24E}"
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E50AE872-56A9-4D1A-8E3B-3DE93341A9D4} = {A4938CEC-DF6C-46ED-811B-294BC2F9192C}
+		{A6181309-D701-4FF4-9FCD-F6422553E24E} = {E50AE872-56A9-4D1A-8E3B-3DE93341A9D4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B478BA5-5E88-4E67-834A-78DD7B31C305}
+	EndGlobalSection
+EndGlobal
