@@ -12,6 +12,7 @@ namespace IDP.Application.Command.User
     {
         [Required(ErrorMessage ="This field is required")]
         [MinLength(10)]
-        public required string Name { get; set; }
+        public required string FullName { get; set; }
+        public required string MobileNumber { get; set; }
     }
 }
