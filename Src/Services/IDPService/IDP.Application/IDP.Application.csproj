@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="DTO\" />
-    <Folder Include="Query\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
     <ProjectReference Include="..\IDP.Domain\IDP.Domain.csproj" />
   </ItemGroup>
 
