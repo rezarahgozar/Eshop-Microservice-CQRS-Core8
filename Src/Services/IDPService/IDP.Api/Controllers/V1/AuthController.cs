@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using IDP.Application.Command.Auth;
 using IDP.Application.Query.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,18 @@ namespace IDP.Api.Controllers.V1
         public async Task<IActionResult> Login([FromBody] AuthQuery authQuery)
         {
             var res = await _mediator.Send(authQuery);
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="authQuery"></param>
+        /// <returns></returns>
+        [HttpPost("RegisterAndSendOtp")]
+        public async Task<IActionResult> RegisterAndSendOtp([FromBody] AuthCommand authCommand)
+        {
+            var res = await _mediator.Send(authCommand);
             return Ok(res);
         }
     }

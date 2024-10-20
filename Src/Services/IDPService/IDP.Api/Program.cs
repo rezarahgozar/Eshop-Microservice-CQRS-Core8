@@ -1,10 +1,20 @@
 using Asp.Versioning;
 using IDP.Application.Handler.Command.User;
+using IDP.Domain.IRepository.Command;
+using IDP.Infra.Repository.Command;
 using MediatR;
 using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region redisconfig
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetValue<string>("CachSetting:RedisUrl");
+});
+
+#endregion redisconfig
 
 // Add services to the container.
 
@@ -14,6 +24,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(typeof(UserHandler).GetTypeInfo().Assembly);
+builder.Services.AddScoped<IOtpRedisRepository,OtpRedisRepository>();
 
 builder.Services.AddApiVersioning(options =>
 {
