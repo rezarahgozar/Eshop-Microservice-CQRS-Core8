@@ -20,15 +20,23 @@ namespace IDP.Infra.Repository.Command
         }
         public async Task<bool> DeleteAsync(Otp entity)
         {
-            await _distributedCache.RemoveAsync(entity.UserId.ToString());
+            await _distributedCache.RemoveAsync(entity.UserName.ToString());
             return true;
         }
 
-        public async Task<bool> InsertAsync(Otp entity)
+        public async Task<Otp> GetDataAsync(string mobile)
         {
-            int time = Convert.ToInt32(_configuration.GetSection("Opt:OptTime").Value);
-            _distributedCache.SetString(entity.UserId.ToString(), JsonConvert.SerializeObject(entity),new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(time)));
-            return true;
+            var data = _distributedCache.GetString(mobile);
+            if (data == null) return null;
+            var otpObj = JsonConvert.DeserializeObject<Otp>(data);
+            return otpObj;
+        }
+
+        public async Task<Otp> InsertAsync(Otp entity)
+        {
+            int time = Convert.ToInt32(_configuration.GetSection("Otp:OtpTime").Value);
+            _distributedCache.SetString(entity.UserName.ToString(), JsonConvert.SerializeObject(entity),new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(time)));
+            return entity;
         }
 
         public Task<bool> UpdateAsync(Otp entity)

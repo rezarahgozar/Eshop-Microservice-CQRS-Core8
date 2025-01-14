@@ -1,7 +1,10 @@
 using Asp.Versioning;
 using IDP.Application.Handler.Command.User;
 using IDP.Domain.IRepository.Command;
+using IDP.Domain.IRepository.Query;
+using IDP.Infra.Data;
 using IDP.Infra.Repository.Command;
+using IDP.Infra.Repository.Query;
 using MediatR;
 using System.Reflection;
 
@@ -25,6 +28,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(typeof(UserHandler).GetTypeInfo().Assembly);
 builder.Services.AddScoped<IOtpRedisRepository,OtpRedisRepository>();
+builder.Services.AddTransient<IUserQueryRepository, UserQueryRepository>();
+builder.Services.AddTransient<IUserCommandRepository, UserCommandRepository>();
+
+builder.Services.AddDbContext<ShopCommandDbContext>();
+builder.Services.AddDbContext<ShopQueryDbContext>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddApiVersioning(options =>
 {

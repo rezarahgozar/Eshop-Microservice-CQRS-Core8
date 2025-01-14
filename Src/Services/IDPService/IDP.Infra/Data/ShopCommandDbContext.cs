@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace IDP.Infra.Data
 {
-    public class ShopDbContext : DbContext
+    public class ShopCommandDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
 
-        public ShopDbContext(IConfiguration configuration)
+        public ShopCommandDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
         }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace IDP.Domain.IRepository.Command.Base
 {
-    public interface ICommandRepository<in T> where T : class
+    public interface ICommandRepository<T> where T : class
     {
-        Task<bool> InsertAsync(T entity);
+        Task<T> InsertAsync(T entity);
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(T entity);
     }
