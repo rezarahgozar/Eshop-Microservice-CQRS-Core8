@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DotNetCore.CAP;
 using IDP.Application.Command.Auth;
 using IDP.Domain.IRepository.Command;
 using IDP.Domain.IRepository.Query;
@@ -16,16 +17,19 @@ namespace IDP.Application.Handler.Command.Auth
         private readonly IOtpRedisRepository _otpRedisRepository;
         private readonly IUserCommandRepository _userCommandRepository;
         private readonly IUserQueryRepository _userQueryRepository;
+        private readonly ICapPublisher _capPublisher;
         private readonly IMapper _mapper;
 
         public AuthCommandHandler(IOtpRedisRepository otpRedisRepository,
             IUserCommandRepository userCommandRepository,
             IUserQueryRepository userQueryRepository,
+            ICapPublisher capPublisher,
             IMapper mapper)
         {
             _otpRedisRepository = otpRedisRepository;
             _userCommandRepository = userCommandRepository;
             _userQueryRepository = userQueryRepository;
+            _capPublisher = capPublisher;
             _mapper = mapper;
         }
         public async Task<bool> Handle(AuthCommand request, CancellationToken cancellationToken)
@@ -39,6 +43,12 @@ namespace IDP.Application.Handler.Command.Auth
                     Random random = new Random();
                     var code = random.Next(1000, 10000);
                     // send notification
+                    // otpevent : queue name
+                    await _capPublisher.PublishAsync<AuthCommand>("otpevent", new AuthCommand 
+                    {
+                        MobileNumber = request.MobileNumber,
+                    });
+
                     userObj.UserName = request.MobileNumber;
                     var res = await _userCommandRepository.InsertAsync(userObj);
                     await _otpRedisRepository.InsertAsync(new Domain.DTO.Otp { UserName = userObj.MobileNumber, OtpCode = code, IsUse = false });
@@ -49,6 +59,11 @@ namespace IDP.Application.Handler.Command.Auth
                     Random random = new Random();
                     var code = random.Next(1000, 10000);
                     // send notification
+                    await _capPublisher.PublishAsync<AuthCommand>("otpevent", new AuthCommand
+                    {
+                        MobileNumber = request.MobileNumber,
+                    });
+
                     userObj.UserName = request.MobileNumber;
                     await _otpRedisRepository.InsertAsync(new Domain.DTO.Otp { UserName = user.MobileNumber, OtpCode = code, IsUse = false });
                 }

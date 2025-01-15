@@ -25,5 +25,12 @@ namespace IDP.Infra.Data
         }
 
         public DbSet<User> Tbl_Users { get; set; }
+
+
+        // for CAP
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

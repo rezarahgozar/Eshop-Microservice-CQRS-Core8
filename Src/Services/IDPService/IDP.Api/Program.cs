@@ -52,6 +52,31 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+// Register CAP
+#region Add Cap library
+builder.Services.AddCap(options =>
+{
+    options.UseEntityFramework<ShopCommandDbContext>(); // to create table outbox and inbox
+    options.UseDashboard(path => path.PathMatch = "/cap-dashboard");
+    options.UseRabbitMQ(options =>
+    {
+        options.ConnectionFactoryOptions = options =>
+        {
+            options.Ssl.Enabled = false; // because of development environment
+            options.HostName = "localhost";
+            options.UserName = "guest"; // rabbit user
+            options.Password = "guest"; // rabbit pass
+            options.Port = 5672;
+        };
+    });
+    options.FailedRetryCount = 20; // if rabbit not responsive how many time I sent request again
+    options.FailedRetryInterval = 5;  // how many second I send request again to Rabbit
+});
+
+#endregion
+
+
+
 Auth.Extensions.AddJwt(builder.Services, builder.Configuration);
 
 var app = builder.Build();
