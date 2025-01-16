@@ -14,6 +14,10 @@
     <PackageReference Include="DotNetCore.CAP.Dashboard" Version="8.3.2" />
     <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="8.3.2" />
     <PackageReference Include="DotNetCore.CAP.SqlServer" Version="8.3.2" />
+    <PackageReference Include="MassTransit" Version="8.3.4" />
+    <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.3.4" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.4" />
+    <PackageReference Include="MassTransit.SqlTransport.SqlServer" Version="8.3.4" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>
@@ -26,6 +30,7 @@
     <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
     <ProjectReference Include="..\IDP.Application\IDP.Application.csproj" />
     <ProjectReference Include="..\IDP.Infra\IDP.Infra.csproj" />
+    <ProjectReference Include="..\IDP.Ioc\IDP.Ioc.csproj" />
   </ItemGroup>
 
 </Project>

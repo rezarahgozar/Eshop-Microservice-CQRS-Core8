@@ -7,7 +7,8 @@ using IDP.Infra.Repository.Command;
 using IDP.Infra.Repository.Query;
 using MediatR;
 using System.Reflection;
-
+using IDP.Ioc;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,15 +27,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMediatR(typeof(UserHandler).GetTypeInfo().Assembly);
-builder.Services.AddScoped<IOtpRedisRepository,OtpRedisRepository>();
-builder.Services.AddTransient<IUserQueryRepository, UserQueryRepository>();
-builder.Services.AddTransient<IUserCommandRepository, UserCommandRepository>();
-
-builder.Services.AddDbContext<ShopCommandDbContext>();
-builder.Services.AddDbContext<ShopQueryDbContext>();
-
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddApiVersioning(options =>
 {
@@ -52,32 +44,42 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-// Register CAP
-#region Add Cap library
-builder.Services.AddCap(options =>
+Auth.Extensions.AddJwt(builder.Services, builder.Configuration);
+
+// Add MassTransit configuration
+
+builder.Services.AddMassTransit(busConfig =>
 {
-    options.UseEntityFramework<ShopCommandDbContext>(); // to create table outbox and inbox
-    options.UseDashboard(path => path.PathMatch = "/cap-dashboard");
-    options.UseRabbitMQ(options =>
+    // Configure Entity Framework Outbox
+    busConfig.AddEntityFrameworkOutbox<ShopCommandDbContext>(o =>
     {
-        options.ConnectionFactoryOptions = options =>
-        {
-            options.Ssl.Enabled = false; // because of development environment
-            options.HostName = "localhost";
-            options.UserName = "guest"; // rabbit user
-            options.Password = "guest"; // rabbit pass
-            options.Port = 5672;
-        };
+        o.QueryDelay = TimeSpan.FromSeconds(30); // Check for messages every 30 seconds and send to RabitMq
+        o.UseSqlServer(); // Use SQL Server as the database providerfto create Outbox table
+        o.UseBusOutbox(); // Enable outbox for message publishing
     });
-    options.FailedRetryCount = 20; // if rabbit not responsive how many time I sent request again
-    options.FailedRetryInterval = 5;  // how many second I send request again to Rabbit
+
+    // Set kebab-case endpoint naming
+    busConfig.SetKebabCaseEndpointNameFormatter();
+
+    // Configure RabbitMQ
+    busConfig.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(new Uri(builder.Configuration.GetValue<string>("Rabbit:Host")), h =>
+        {
+            h.Username(builder.Configuration.GetValue<string>("Rabbit:Username"));
+            h.Password(builder.Configuration.GetValue<string>("Rabbit:Password"));
+        });
+
+        // Retry policy for messages
+        cfg.UseMessageRetry(r => r.Exponential(10, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30),TimeSpan.FromSeconds(5)));
+
+        // Configure endpoints for consumers
+        cfg.ConfigureEndpoints(context);
+    });
 });
 
-#endregion
-
-
-
-Auth.Extensions.AddJwt(builder.Services, builder.Configuration);
+// Call the RegisterServices method
+builder.Services.RegisterServices();
 
 var app = builder.Build();
 

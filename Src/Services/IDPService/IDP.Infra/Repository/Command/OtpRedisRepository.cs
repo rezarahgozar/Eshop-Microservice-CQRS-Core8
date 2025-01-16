@@ -39,6 +39,11 @@ namespace IDP.Infra.Repository.Command
             return entity;
         }
 
+        public Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> UpdateAsync(Otp entity)
         {
             throw new NotImplementedException();

@@ -13,11 +13,13 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
-    <PackageReference Include="DotNetCore.CAP" Version="8.3.2" />
+    <!--<PackageReference Include="DotNetCore.CAP" Version="8.3.2" />-->
+    <PackageReference Include="MassTransit" Version="8.3.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
+    <ProjectReference Include="..\..\IBus\EventMessages\EventMessages.csproj" />
     <ProjectReference Include="..\IDP.Domain\IDP.Domain.csproj" />
   </ItemGroup>
 

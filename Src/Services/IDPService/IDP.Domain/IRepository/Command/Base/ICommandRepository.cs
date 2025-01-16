@@ -11,5 +11,6 @@ namespace IDP.Domain.IRepository.Command.Base
         Task<T> InsertAsync(T entity);
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(T entity);
+        Task SaveChangesAsync();
     }
 }
